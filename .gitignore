@@ -1,5 +1,4 @@
 .venv/
 *.csv
 *.parquet
-data/
 /tmp/
