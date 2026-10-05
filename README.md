@@ -80,7 +80,8 @@ data/
 Graças ao desacoplamento da arquitetura DDD, para processar um novo conjunto de dados (como dados de funcionários associados às empresas) não é necessário alterar nenhuma linha da infraestrutura ou do motor DuckDB.
 
 Basta seguir 2 passos:
-Passo A: Criar o Modelo do Domínio (src/domain/funcionarios_model.py)
+
+# Passo A: Criar o Modelo do Domínio (src/domain/funcionarios_model.py)
 
 ```text
 from dataclasses import dataclass
@@ -110,7 +111,7 @@ class FuncionarioDomainModel:
         )
 ```
 
-Passo B: Consumir no Pipeline Reutilizando o Repositório
+# Passo B: Consumir no Pipeline Reutilizando o Repositório
 
 ```text
 Basta injetar o novo schema no ParquetIngestionRepository já existente, mantendo todo o padrão de alta performance e consumo restrito de RAM.
