@@ -41,6 +41,7 @@ ingestao_no_limite/
 ```text
 sudo usermod -aG docker $USER
 newgrp docker
+```
 
 2. Build da Imagem Docker
 
@@ -48,6 +49,7 @@ Na raiz do projeto (ingestao_no_limite), execute:
 
 ```text
 docker run --rm --memory="37m" --memory-swap="37m" -v $(pwd)/data:/data ingestao-no-limite:v9 /data/empresas_dados_gov.csv /data/saida.parquet
+```
 
 3. Para evitar o versionamento de arquivos temporários e pesados:
 
@@ -59,3 +61,4 @@ Arquivo .gitignore Recomendado
 *.parquet
 data/
 /tmp/
+```
