@@ -74,3 +74,72 @@ Arquivo .gitignore Recomendado
 data/
 /tmp/
 ```
+
+## 5. Guia de Extensibilidade: Como Adicionar um Novo Domínio (Ex: Funcionários)
+
+Graças ao desacoplamento da arquitetura DDD, para processar um novo conjunto de dados (como dados de funcionários associados às empresas) não é necessário alterar nenhuma linha da infraestrutura ou do motor DuckDB.
+
+Basta seguir 2 passos:
+Passo A: Criar o Modelo do Domínio (src/domain/funcionarios_model.py)
+
+```text
+from dataclasses import dataclass
+from typing import Dict
+
+@dataclass
+class DatasetSchema:
+    columns_mapping: Dict[str, str]
+    order_by_column: str
+    row_group_size: int = 50000
+    compression: str = "ZSTD"
+    compression_level: int = 19
+
+class FuncionarioDomainModel:
+    @staticmethod
+    def get_schema() -> DatasetSchema:
+        columns = {
+            'cnpj_basico': 'VARCHAR',
+            'cpf_funcionario': 'VARCHAR',
+            'nome_funcionario': 'VARCHAR',
+            'cargo': 'VARCHAR',
+            'data_admissao': 'VARCHAR'
+        }
+        return DatasetSchema(
+            columns_mapping=columns,
+            order_by_column="cnpj_basico" # Ordena por CNPJ para agrupar
+        )
+```
+
+Passo B: Consumir no Pipeline Reutilizando o Repositório
+
+```text
+Basta injetar o novo schema no ParquetIngestionRepository já existente, mantendo todo o padrão de alta performance e consumo restrito de RAM.
+
+from src.domain.funcionarios_model import FuncionarioDomainModel
+from src.infrastructure.repository import ParquetIngestionRepository
+
+# 1. Pega o schema do novo domínio (Funcionários)
+schema = FuncionarioDomainModel.get_schema()
+
+# 2. Injeta o schema diretamente no repositório de infraestrutura já existente
+repository = ParquetIngestionRepository(
+    csv_path="data/funcionarios.csv", 
+    output_parquet="data/funcionarios_saida.parquet", 
+    schema=schema
+)
+
+# 3. Executa a ingestão reutilizando 100% da engine DuckDB,
+# mantendo o Out-of-Core, o spill para disco e o consumo restrito de RAM!
+repository.ingest()
+
+```
+
+### Comandos Git para criar a nova branch e enviar as atualizações:
+
+Execute os comandos abaixo no seu terminal para registrar tudo na nova branch:
+
+```bash
+git checkout -b feature/ddd-architecture
+git add .
+git commit -m "feat: adiciona arquitetura DDD, design patterns e guia de novos dominios no README"
+git push -u origin feature/ddd-architecture
