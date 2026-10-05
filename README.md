@@ -38,18 +38,22 @@ ingestao_no_limite/
 
 1. Permitir execução no diretório do projeto 
 
+```text
 sudo usermod -aG docker $USER
 newgrp docker
 
 2. Build da Imagem Docker
 
 Na raiz do projeto (ingestao_no_limite), execute:
+
+```text
 docker run --rm --memory="37m" --memory-swap="37m" -v $(pwd)/data:/data ingestao-no-limite:v9 /data/empresas_dados_gov.csv /data/saida.parquet
 
 3. Para evitar o versionamento de arquivos temporários e pesados:
 
 Arquivo .gitignore Recomendado
 
+```text
 .venv/
 *.csv
 *.parquet
