@@ -21,7 +21,6 @@ Após a evolução do pipeline por 9 versões, a **V9** foi consagrada como camp
 ---
 
 ## 3. Estrutura do Repositório
-```text
 ingestao_no_limite/
 ├── .gitignore
 ├── README.md
@@ -43,6 +42,7 @@ newgrp docker
 2. Build da Imagem Docker
 
 Na raiz do projeto (ingestao_no_limite), execute:
+
 docker run --rm --memory="37m" --memory-swap="37m" -v $(pwd)/data:/data ingestao-no-limite:v9 /data/empresas_dados_gov.csv /data/saida.parquet
 
 3. Para evitar o versionamento de arquivos temporários e pesados:
